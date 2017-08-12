@@ -19,39 +19,45 @@ public class MultifacestedAlphabetBlocks {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         
+        /*
+        Create three HashMaps: one for the list of words; one to count the max occurence of each letter; and one to count the
+        maximum number of times any letter occurs in the same word as another letter
+        */
         HashMap<Long, String> realWords = new HashMap<>();
         HashMap<String, Integer> alphabet = new HashMap<>();
         HashMap<Integer, String> co = new HashMap<>();
         
         ArrayList<ArrayList<String>> allBlocks = new ArrayList<ArrayList<String>>();
         ArrayList<String> blocks = new ArrayList<>();
-        
        
-        
         String fileName = "real_words.txt";
         
         String line = "";
         
-        
-        for(char letter = 'A'; letter <= 'Z'; letter++){
-            String l = Character.toString(Character.toLowerCase(letter));
-            alphabet.put(l, 0);
-        }
-
+        /*
+        Set up FileReader and BufferedReader
+        */
             FileReader fileReader = new FileReader(fileName);
             
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+        /*
+        Set every letter of the alphabet as a key with the value 0 in HashMap alphabet.
+        */
+        alphabet = fillAlphabet(alphabet);   
             
-            long count = 0;
-            do{
-          
-                realWords.put(count, line);
-               // System.out.println(realWords.get(count) + ": " + count);
-                count++;
-            }
-            while((line = bufferedReader.readLine()) != null);
-           alphabet = countOccurences(realWords, alphabet);
+        /*
+        Set every word in the file as a value in realWords and their numbered order as the key
+        */
+        realWords = fillRealWords(realWords, bufferedReader);
            
+        /*
+        Count the max number of times any given letter occurs in the words stored in realWords
+        */
+        alphabet = countOccurences(realWords, alphabet);
+        
+        /*
+        Print results
+        */
            for(String s : alphabet.keySet()){
                String key = s.toString();
                String value = alphabet.get(s).toString();
@@ -59,6 +65,7 @@ public class MultifacestedAlphabetBlocks {
            }
             
         }
+    
     public static HashMap<String, Integer> countOccurences(HashMap<Long, String> rw, HashMap<String,Integer> a){
         //count letter occurences
         for(long l = 0; l < rw.size(); l++){
@@ -77,7 +84,7 @@ public class MultifacestedAlphabetBlocks {
                     liw.put(s, 1);
                 }
             }
-            //check if occurence value is higher in a or liw. If liw, update a.
+            //check if occurence value is higher in 'a' or 'liw'. If 'liw', update 'a'.
              for(char letter = 'A'; letter <= 'Z'; letter++){
             String s = Character.toString(Character.toLowerCase(letter));
             if(liw.containsKey(s)){
@@ -89,6 +96,22 @@ public class MultifacestedAlphabetBlocks {
         }
         }
         return a;
+    }
+    public static HashMap<String, Integer> fillAlphabet(HashMap<String, Integer> a){
+        for(char letter = 'a'; letter <= 'z'; letter++){
+            String l = Character.toString(letter);
+            a.put(l, 0);
+        }
+        return a;
+    }
+    public static HashMap<Long, String> fillRealWords(HashMap<Long, String> rw, BufferedReader br){
+    long count = 0;
+            do{          
+                rw.put(count, line);
+               // System.out.println(realWords.get(count) + ": " + count);
+                count++;
+            }
+            while((line = bufferedReader.readLine()) != null);
     }
     /*public ArrayList<ArrayList<String>> makeBoxes(ArrayList<ArrayList<String>> ab, ArrayList<String> b, HashMap<String, Integer> a){
         for(char letter = 'a'; letter <= 'z'; letter++){
